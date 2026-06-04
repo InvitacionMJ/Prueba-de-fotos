@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prueba Álbum Cloudinary</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #F7D3A7;
+    font-family: 'Playfair Display', serif;
+    color: #5A3C2E;
+    text-align: center;
+    padding: 25px;
+}
+
+.card {
+    max-width: 430px;
+    margin: 25px auto;
+    padding: 30px;
+    border-radius: 24px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.75), rgba(255,243,226,0.60));
+    box-shadow:
+        0 18px 45px rgba(72, 38, 22, 0.25),
+        inset 0 0 0 1px rgba(255,255,255,0.55);
+    border: 1px solid rgba(255, 235, 205, 0.75);
+    backdrop-filter: blur(10px);
+}
+
+h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 58px;
+    color: #8A3A22;
+    margin: 0;
+}
+
+h2 {
+    font-size: 24px;
+    color: #6A4838;
+}
+
+p {
+    line-height: 1.5;
+}
+
+.btn {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #E8A76F, #C96F3A, #A95424);
+    border: none;
+    border-radius: 999px;
+    color: white;
+    font-size: 17px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow:
+        0 8px 20px rgba(90, 60, 46, 0.28),
+        inset 0 1px 1px rgba(255,255,255,0.45);
+    margin: 8px;
+}
+
+.btn:hover {
+    transform: scale(1.04);
+}
+
+.btn-secundario {
+    background: linear-gradient(135deg, #FDF3EA, #EFC7A6, #D99663);
+    color: #8A3A22;
+    border: 1px solid rgba(138, 58, 34, 0.22);
+}
+
+.separador {
+    width: 75%;
+    margin: 20px auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(138,58,34,0.55), transparent);
+}
+
+.galeria {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.item {
+    position: relative;
+}
+
+.galeria img,
+.galeria video {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.75);
+    box-shadow: 0 8px 18px rgba(90,60,46,0.20);
+    background: #FDF3EA;
+}
+
+.descargar {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #8A3A22;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+#estado {
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+
+    .card {
+        padding: 25px 18px;
+    }
+
+    .galeria {
+        grid-template-columns: 1fr;
+    }
+
+    .galeria img,
+    .galeria video {
+        height: 220px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>Álbum</h1>
+    <h2>Recuerdos de la boda</h2>
+
+    <p>
+        Esta es una prueba del álbum digital.
+        Sube una foto o video y después presiona “Ver álbum”.
+    </p>
+
+    <button class="btn" onclick="abrirSubidaFotos()">Subir fotos o videos</button>
+
+    <div class="separador"></div>
+
+    <button class="btn btn-secundario" onclick="verAlbumFotos()">Ver álbum</button>
+    <button class="btn btn-secundario" onclick="limpiarGaleria()">Limpiar vista</button>
+
+    <p id="estado">Aún no se ha cargado el álbum.</p>
+
+    <div id="galeriaFotos" class="galeria"></div>
+</div>
+
+<script>
+const CLOUD_NAME = "dtssk5zhr";
+const UPLOAD_PRESET = "Boda_Mich_Jhovas";
+const ALBUM_FOLDER = "boda_mich_jhovas/invitados";
+const ALBUM_TAG = "boda_mich_jhovas_album";
+
+function abrirSubidaFotos() {
+    cloudinary.openUploadWidget(
+        {
+            cloudName: CLOUD_NAME,
+            uploadPreset: UPLOAD_PRESET,
+            sources: ["local", "camera"],
+            multiple: true,
+            resourceType: "auto",
+            folder: ALBUM_FOLDER,
+            tags: [ALBUM_TAG],
+            clientAllowedFormats: ["jpg", "jpeg", "png", "webp", "mp4"],
+            maxFileSize: 20000000,
+            styles: {
+                palette: {
+                    window: "#FDF3EA",
+                    sourceBg: "#F7D3A7",
+                    windowBorder: "#A95424",
+                    tabIcon: "#A95424",
+                    inactiveTabIcon: "#6A4838",
+                    menuIcons: "#A95424",
+                    link: "#A95424",
+                    action: "#C96F3A",
+                    inProgress: "#C96F3A",
+                    complete: "#6D8F3A",
+                    error: "#B14E4B",
+                    textDark: "#5A3C2E",
+                    textLight: "#FFFFFF"
+                }
+            }
+        },
+        function(error, result) {
+            if (error) {
+                alert("Hubo un problema al subir el archivo.");
+                console.log(error);
+                return;
+            }
+
+            if (result && result.event === "success") {
+                agregarAgaleria(result.info);
+                document.getElementById("estado").textContent = "Archivo subido correctamente. También se agregó a la vista.";
+            }
+
+            if (result && result.event === "queues-end") {
+                alert("Fotos o videos subidos correctamente.");
+            }
+        }
+    );
+}
+
+function agregarAgaleria(info) {
+    const galeria = document.getElementById("galeriaFotos");
+
+    const item = document.createElement("div");
+    item.className = "item";
+
+    if (info.resource_type === "video") {
+        const video = document.createElement("video");
+        video.src = info.secure_url;
+        video.controls = true;
+        item.appendChild(video);
+    } else {
+        const img = document.createElement("img");
+        img.src = info.secure_url;
+        img.alt = "Foto subida";
+        item.appendChild(img);
+    }
+
+    const link = document.createElement("a");
+    link.href = info.secure_url;
+    link.target = "_blank";
+    link.download = "";
+    link.className = "descargar";
+    link.textContent = "Abrir / descargar";
+
+    item.appendChild(link);
+    galeria.prepend(item);
+}
+
+async function verAlbumFotos() {
+    const galeria = document.getElementById("galeriaFotos");
+    const estado = document.getElementById("estado");
+
+    galeria.innerHTML = "";
+    estado.textContent = "Cargando álbum...";
+
+    const imagenesURL = `https://res.cloudinary.com/${CLOUD_NAME}/image/list/${ALBUM_TAG}.json`;
+    const videosURL = `https://res.cloudinary.com/${CLOUD_NAME}/video/list/${ALBUM_TAG}.json`;
+
+    let recursos = [];
+
+    try {
+        const resImg = await fetch(imagenesURL);
+        if (resImg.ok) {
+            const dataImg = await resImg.json();
+            if (dataImg.resources) {
+                dataImg.resources.forEach(item => {
+                    recursos.push({
+                        type: "image",
+                        public_id: item.public_id,
+                        format: item.format
+                    });
+                });
+            }
+        }
+    } catch (e) {
+        console.log("No se pudieron cargar imágenes:", e);
+    }
+
+    try {
+        const resVid = await fetch(videosURL);
+        if (resVid.ok) {
+            const dataVid = await resVid.json();
+            if (dataVid.resources) {
+                dataVid.resources.forEach(item => {
+                    recursos.push({
+                        type: "video",
+                        public_id: item.public_id,
+                        format: item.format
+                    });
+                });
+            }
+        }
+    } catch (e) {
+        console.log("No se pudieron cargar videos:", e);
+    }
+
+    if (recursos.length === 0) {
+        estado.textContent = "No se encontraron fotos con el tag del álbum. Sube una foto usando este botón y vuelve a intentar.";
+        return;
+    }
+
+    estado.textContent = "Álbum cargado correctamente.";
+
+    recursos.reverse().forEach(item => {
+        const div = document.createElement("div");
+        div.className = "item";
+
+        if (item.type === "image") {
+            const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${item.public_id}.${item.format}`;
+            const miniatura = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_500,h_500,c_fill,q_auto/${item.public_id}.${item.format}`;
+
+            const img = document.createElement("img");
+            img.src = miniatura;
+            img.alt = "Foto de la boda";
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.target = "_blank";
+            link.download = "";
+            link.className = "descargar";
+            link.textContent = "Abrir / descargar";
+
+            div.appendChild(img);
+            div.appendChild(link);
+        } else {
+            const url = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${item.public_id}.${item.format}`;
+
+            const video = document.createElement("video");
+            video.src = url;
+            video.controls = true;
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.target = "_blank";
+            link.download = "";
+            link.className = "descargar";
+            link.textContent = "Abrir / descargar";
+
+            div.appendChild(video);
+            div.appendChild(link);
+        }
+
+        galeria.appendChild(div);
+    });
+}
+
+function limpiarGaleria() {
+    document.getElementById("galeriaFotos").innerHTML = "";
+    document.getElementById("estado").textContent = "Vista limpia.";
+}
+</script>
+
+</body>
+</html>
